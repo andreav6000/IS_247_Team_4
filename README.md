@@ -1,6 +1,7 @@
 # Grocery Store Inventory Management System 
 
-## Team Memebers/Roles:
+## Team Members/Roles:
+
 **Mohamed Fall** - 
 
 **Dylan Vu** -
