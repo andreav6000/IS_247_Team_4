@@ -2,10 +2,10 @@
 
 ## Team Members/Roles:
 
-**Mohamed Fall** - 
+**Mohamed Fall** - Code Reviewer
 
-**Dylan Vu** -
+**Dylan Vu** - Code Developer
 
-**Ryan Zaman** -
+**Ryan Zaman** - Error Handeling Engineer 
 
-**Andrea Vargas** -  
+**Andrea Vargas** -  Project Manager
