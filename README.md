@@ -1,6 +1,6 @@
 # Project Name:  Grocery Store Inventory Management System 
 
-### Team Members/Roles:
+### <ins>Team Members/Roles:</ins>
 
 **Mohamed Fall** - Project Tester
 
