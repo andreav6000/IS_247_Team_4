@@ -1,6 +1,6 @@
-Project Name:  Grocery Store Inventory Management System 
+# Project Name:  Grocery Store Inventory Management System 
 
-## Team Members/Roles:
+### Team Members/Roles:
 
 **Mohamed Fall** - Project Tester
 
@@ -11,7 +11,7 @@ Project Name:  Grocery Store Inventory Management System
 **Andrea Vargas** -  Project Manager
 
 
-**Problem Statement: Store Inventory System Management**
+## **Problem Statement: Store Inventory System Management**
 
 Many small grocery stores still rely on manual inventory tracking, which makes it difficult for owners to keep up with their stock. Without a digital system, they have to physically check shelves in order to figure out what is running low or overstocked. This process is not only time consuming but can also lead to wasted products, financial losses, and missed sales opportunities.
 To solve this issue, our group has decided to develop a ***digital inventory management system.*** 
