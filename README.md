@@ -6,7 +6,7 @@
 
 **Dylan Vu** - Code Developer
 
-**Ryan Zaman** - Assistant Project Manager/code developer
+**Ryan Zaman** - Assistant Project Manager/Code Developer
 
 **Andrea Vargas** -  Project Manager
 
