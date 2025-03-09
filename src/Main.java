@@ -4,7 +4,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        //While statement displays menu options to look at
+        //While statement displays menu options
         while(true) {
             System.out.println("1. Add/Search Product");
             System.out.println("2. Display Inventory");
