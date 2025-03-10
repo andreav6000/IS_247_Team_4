@@ -1,6 +1,13 @@
-Remove duplicate manually
-We created tha
+Remove duplicate manually:
 
-Use a stack to reverse the list
+It involved
+Creating a new list called uniqueList.
+Iterated through the original list.
+Before adding each item to uniqueList, checked if it was already present.
+
+Then we Used a Stack and pushed each element from uniqueList onto the stack.
+Since stacks follow a Last-In, First-Out (LIFO) order, popping elements from the stack retrieves them in reverse order. 
+Use a stack to reverse the list: 
 
 Display the final reverse list
+We the original list, the list after removing duplicates, and the final reversed list to clearly show the transformations.
