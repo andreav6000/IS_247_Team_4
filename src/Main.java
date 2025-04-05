@@ -49,6 +49,14 @@ public class Main {
 
                     inventory.updateStock(updateName, newQuantity);
                     break;
+
+                case 3:
+                    inventory.checkLowStock();
+                    break;
+
+                case 4:
+                    inventory.checkOverStock();
+                    break;
             }
         }
     }
