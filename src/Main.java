@@ -40,7 +40,7 @@ public class Main {
                     break;
 
                 case 2:
-                    //Update the inventory of a specific product
+                    //Update inventory of a specific product
                     System.out.print("Update product name: ");
                     String updateName = scanner.nextLine();
 
