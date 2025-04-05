@@ -39,8 +39,16 @@ public class Main {
                     System.out.print("Product is added to cart");
                     break;
 
-                //For the other cases I guess we can use different files
-                //that each serve a function (i.e. display inventory, check low stock etc.)
+                case 2:
+                    //Update the inventory of a specific product
+                    System.out.print("Update product name: ");
+                    String updateName = scanner.nextLine();
+
+                    System.out.print("Update product quantity: ");
+                    int newQuantity = scanner.nextInt();
+
+                    inventory.updateStock(updateName, newQuantity);
+                    break;
             }
         }
     }
