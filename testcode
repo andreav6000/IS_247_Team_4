@@ -1,0 +1,42 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+
+public class Main {
+    public static void main(String[] args) {
+        // Step 1: Create an ArrayList with some duplicate values
+        List<String> list = new ArrayList<>();
+        list.add("Apple");
+        list.add("Banana");
+        list.add("Cherry");
+        list.add("Date");
+        list.add("Banana");
+        list.add("Apple");
+
+        System.out.println("Original List: " + list);
+
+        // Step 2: Remove duplicates manually
+        List<String> uniqueList = new ArrayList<>();
+        for (String item : list) {
+            if (!uniqueList.contains(item)) {
+                uniqueList.add(item);
+            }
+        }
+
+        System.out.println("List after removing duplicates: " + uniqueList);
+
+        // Step 3: Use a Stack to reverse the list
+        Stack<String> stack = new Stack<>();
+        for (String item : uniqueList) {
+            stack.push(item);
+        }
+
+        List<String> reversedList = new ArrayList<>();
+        while (!stack.isEmpty()) {
+            reversedList.add(stack.pop());
+        }
+
+        // Step 4: Display the final reversed list
+        System.out.println("Reversed List: " + reversedList);
+    }
+}
