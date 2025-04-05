@@ -15,7 +15,7 @@ public class Product {
         this.expirationDate = expirationDate;
         this.location = location;
     }
-    //Getter methods for name, quantity, dates, location
+    //Getter methods for name, quantity, dates, and its location
     public String getName() {
         return name;
     }
