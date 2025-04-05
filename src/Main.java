@@ -21,8 +21,22 @@ public class Main {
             switch(choice){
                 //Add/Search Product
                 case 1:
-                    System.out.print("Enter product name");
+                    System.out.print("Enter product name: ");
                     String name = scanner.nextLine();
+
+                    System.out.print("Enter quantity: ");
+                    int quantity = scanner.nextLine();
+
+                    System.out.print("Enter expiration date: ");
+                    scanner.nextLine();
+                    LocalDate expirationDate = LocalDate.parse(scanner.nextLine(), formatter);
+
+                    System.out.print("Enter location: ");
+                    String location = scanner.nextLine();
+
+                    Product newProduct = new Product(name, quantity, expirationDate, location);
+                    inventory.addProduct(newProduct);
+                    System.out.print("Product is added to cart");
                     break;
 
                 //For the other cases I guess we can use different files
