@@ -3,7 +3,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 /**
- * Class for managing the store inventory.
+ * class for managing the store inventory.
  * Uses collections, file I/O, recursion, and provides helper methods for reporting.
  */
 public class Inventory {
@@ -81,7 +81,7 @@ public class Inventory {
      * Checks for items with low stock.
      */
     public void checkLowStock() {
-        System.out.println("🚨 Checking for low stock items...");
+        System.out.println(" Checking for low stock items...");
         for(AbstractItem item : items) {
             if(item.getQuantity() < LOW_STOCK) {
                 System.out.println("Low stock: " + item);
@@ -93,7 +93,7 @@ public class Inventory {
      * Checks for items with over stock.
      */
     public void checkOverStock() {
-        System.out.println("⚠️ Checking for overstock items...");
+        System.out.println(" Checking for overstock items...");
         for(AbstractItem item : items) {
             if(item.getQuantity() > OVER_STOCK) {
                 System.out.println("Overstock: " + item);
@@ -119,7 +119,7 @@ public class Inventory {
      * Displays all items in the inventory grouped by section.
      */
     public void displayItems() {
-        System.out.println("📦 Full Store Inventory:");
+        System.out.println(" Full Store Inventory:");
         Map<String, List<AbstractItem>> sectionMap = new HashMap<>();
         for(AbstractItem item : items) {
             sectionMap.computeIfAbsent(item.getSection(), k -> new ArrayList<>()).add(item);
@@ -185,7 +185,7 @@ public class Inventory {
      * Processes orders from the queue.
      */
     public void processOrders() {
-        System.out.println("📬 Processing orders...");
+        System.out.println(" Processing orders...");
         while(!orderQueue.isEmpty()) {
             String order = orderQueue.poll();
             System.out.println("Processing order: " + order);
@@ -198,7 +198,7 @@ public class Inventory {
     public void undoLastUpdate() {
         if(!undoStack.isEmpty()) {
             String lastAction = undoStack.pop();
-            System.out.println("⏪ Undoing action: " + lastAction);
+            System.out.println(" Undoing action: " + lastAction);
         } else {
             System.out.println("Nothing to undo!");
         }
@@ -210,7 +210,7 @@ public class Inventory {
     public void checkExpiringItems() {
         LocalDate today = LocalDate.now();
         LocalDate weekLater = today.plusDays(7);
-        System.out.println("⚠️ Alert: Perishable items expiring within the next 7 days:");
+        System.out.println(" Alert: Perishable items expiring within the next 7 days:");
         boolean found = false;
         for(AbstractItem item : items) {
             if(item.isPerishable() &&

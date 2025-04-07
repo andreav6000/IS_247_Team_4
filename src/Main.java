@@ -19,8 +19,7 @@ public class Main {
      */
     public static void printBanner() {
         System.out.println("========================================");
-        System.out.println("  🛒  Welcome to Team4$ SuperMinimarket  🛒");
-        System.out.println("       Management Extravaganza!       ");
+        System.out.println("   Welcome to Team4$ SuperMinimarket  ");
         System.out.println("========================================");
         System.out.println("Today's Date: " + LocalDate.now());
     }
@@ -140,7 +139,7 @@ public class Main {
             if(choice == 6) {
                 try {
                     inventory.saveInventory("inventory.txt");
-                    System.out.println("💾 Inventory saved. Exiting system... Goodbye, " + manager + "!");
+                    System.out.println(" Inventory saved. Exiting system... Goodbye, " + manager + "!");
                 } catch(IOException e) {
                     System.out.println("❗ Error saving inventory: " + e.getMessage());
                 }
@@ -196,11 +195,11 @@ public class Main {
                     Product newProduct = new Product(name, quantity, expirationDate, section, perishable);
                     inventory.addItem(newProduct);
                     warehouse.addItem(newProduct);
-                    System.out.println("🎉 Product added!");
+                    System.out.println(" Product added!");
 
                     // If perishable and expiring soon (within 7 days), show an alert.
                     if(perishable && newProduct.getExpirationDate().isBefore(LocalDate.now().plusDays(8))) {
-                        System.out.println("⚠️ Alert: " + newProduct.getName() + " will expire on " + newProduct.getExpirationDate());
+                        System.out.println(" Alert: " + newProduct.getName() + " will expire on " + newProduct.getExpirationDate());
                     }
                     break;
 
@@ -226,7 +225,7 @@ public class Main {
                     }
                     try {
                         inventory.updateStock(updateName, newQuantity);
-                        System.out.println("✅ Quantity updated!");
+                        System.out.println(" Quantity updated!");
                     } catch (ProductNotFound e) {
                         System.out.println("❗ " + e.getMessage());
                         break;

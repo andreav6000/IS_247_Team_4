@@ -1,0 +1,10 @@
+Apple,50,2025-05-10,Vegetables & Fruits,true
+Banana,40,2025-05-08,Vegetables & Fruits,true
+Corn Flakes,30,2025-05-20,Cereals & Snacks,true
+Potato Chips,60,2025-05-18,Cereals & Snacks,true
+Milk,20,2025-05-15,Dairy,true
+Yogurt,25,2025-05-16,Dairy,true
+LED TV,10,N/A,Electronics,false
+T-Shirt,35,N/A,Clothing,false
+Action Figure,15,N/A,Toys,false
+mo,10,2025-05-03,toys,true
