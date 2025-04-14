@@ -2,11 +2,20 @@ import java.io.*;
 import java.time.LocalDate;
 import java.util.*;
 
+/**
+ * Inventory class manages the store items.
+ * Handles all operations like adding, updating, saving, and displaying inventory.
+ * Now includes manager contribution tracking!
+ */
 public class Inventory {
+
     private List<AbstractItem> items;
     private Map<String, AbstractItem> itemMap;
     private Stack<String> undoStack;
     private Queue<String> orderQueue;
+
+    // NEW: Track how many products each manager added
+    private Map<String, Integer> managerContributions = new HashMap<>();
 
     public static final int LOW_STOCK = 5;
     public static final int OVER_STOCK = 100;
@@ -16,6 +25,16 @@ public class Inventory {
         itemMap = new HashMap<>();
         undoStack = new Stack<>();
         orderQueue = new LinkedList<>();
+    }
+
+    // Record product contribution by manager
+    public void recordManagerContribution(String manager, int quantity) {
+        managerContributions.put(manager, managerContributions.getOrDefault(manager, 0) + quantity);
+    }
+
+    // Get total quantity added by all managers
+    public Map<String, Integer> getManagerContributions() {
+        return managerContributions;
     }
 
     public void addItem(AbstractItem item) {
@@ -34,23 +53,15 @@ public class Inventory {
 
     public void updateStock(String name, int newQuantity) throws ProductNotFound {
         AbstractItem item = itemMap.get(name.toLowerCase());
-        if (item == null) {
-            throw new ProductNotFound("Item " + name + " not found.");
-        }
-        if (!item.isPerishable()) {
-            item.setQuantity(item.getQuantity() + newQuantity);
-        }
+        if (item == null) throw new ProductNotFound("Item " + name + " not found.");
+        if (!item.isPerishable()) item.setQuantity(item.getQuantity() + newQuantity);
         undoStack.push("Updated " + name + " stock by adding " + newQuantity);
     }
 
     public void updateStock(String name, String operator, int value) throws ProductNotFound {
         AbstractItem item = itemMap.get(name.toLowerCase());
-        if (item == null) {
-            throw new ProductNotFound("Item " + name + " not found.");
-        }
-        if (item instanceof Product) {
-            ((Product)item).updateStock(operator, value);
-        }
+        if (item == null) throw new ProductNotFound("Item " + name + " not found.");
+        if (item instanceof Product) ((Product)item).updateStock(operator, value);
         undoStack.push("Updated " + name + " stock with operator " + operator + " and value " + value);
     }
 
@@ -82,23 +93,37 @@ public class Inventory {
 
     public AbstractItem recursiveSearch(String name, int index) {
         if (index >= items.size()) return null;
-        if (items.get(index).getName().equalsIgnoreCase(name)) {
-            return items.get(index);
-        }
+        if (items.get(index).getName().equalsIgnoreCase(name)) return items.get(index);
         return recursiveSearch(name, index + 1);
     }
 
+    /**
+     * Display items by section + show manager contribution summary
+     */
     public void displayItems() {
         System.out.println("Full Store Inventory:");
         Map<String, List<AbstractItem>> sectionMap = new HashMap<>();
+
         for (AbstractItem item : items) {
             sectionMap.computeIfAbsent(item.getSection(), k -> new ArrayList<>()).add(item);
         }
+
         for (String section : sectionMap.keySet()) {
             System.out.println("Section: " + section);
+            int totalQty = 0;
+
             for (AbstractItem item : sectionMap.get(section)) {
                 System.out.println("  " + item.toString());
+                totalQty += item.getQuantity();
             }
+
+            System.out.println("Total quantity of products in " + section + ": " + totalQty);
+        }
+
+        // NEW: Manager Summary
+        System.out.println("\n--- Manager Product Contributions ---");
+        for (String manager : managerContributions.keySet()) {
+            System.out.println(manager + " added a total of " + managerContributions.get(manager) + " products.");
         }
     }
 
