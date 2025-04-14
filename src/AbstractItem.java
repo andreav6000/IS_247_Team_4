@@ -1,37 +1,31 @@
 import java.time.LocalDate;
 
 /**
- * Abstract class representing a general item in the inventory.
- * This is used as a base class for all types of products/items.
+ * Abstract class representing an item in inventory.
+ * Used as a base class for different product types.
+ * Demonstrates abstraction and method overriding.
  */
 public abstract class AbstractItem {
-    // Name of the item
+
     protected String name;
-
-    // Quantity in stock
     protected int quantity;
-
-    // Expiration date (only applies if perishable is true)
-    protected LocalDate expirationDate;
-
-    // Section of the store where this item is located
+    protected LocalDate expirationDate; // Only for perishable items
     protected String section;
-
-    // Indicates if the item is perishable or not
     protected boolean perishable;
 
     /**
-     * Constructor for all inventory items.
-     * If the item is perishable, it will store an expiration date.
-     * Otherwise, the expiration date is null.
+     * Constructor for AbstractItem.
+     * @param name The product name.
+     * @param quantity Product quantity.
+     * @param expirationDate Expiration date if perishable.
+     * @param section Store section where product belongs.
+     * @param perishable True if the product is perishable.
      */
     public AbstractItem(String name, int quantity, LocalDate expirationDate, String section, boolean perishable) {
         this.name = name;
         this.quantity = quantity;
         this.section = section;
         this.perishable = perishable;
-
-        // Only store expiration date if the item is perishable
         if (perishable) {
             this.expirationDate = expirationDate;
         } else {
@@ -39,29 +33,25 @@ public abstract class AbstractItem {
         }
     }
 
-    // Getter for item name
+    // Getter methods
     public String getName() { return name; }
-
-    // Getter for quantity
     public int getQuantity() { return quantity; }
-
-    // Getter for expiration date
     public LocalDate getExpirationDate() { return expirationDate; }
-
-    // Getter for store section
     public String getSection() { return section; }
-
-    // Check if the item is perishable
     public boolean isPerishable() { return perishable; }
 
-    // Update quantity
+    /**
+     * Sets a new quantity for a non-perishable item.
+     * @param quantity New quantity value.
+     */
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
     /**
-     * Determines if a perishable item is expired.
-     * Non-perishable items are never considered expired.
+     * Checks if item is expired.
+     * Only works for perishable items.
+     * @return True if expired, false otherwise.
      */
     public boolean isExpired() {
         if (!perishable) return false;
@@ -69,14 +59,15 @@ public abstract class AbstractItem {
     }
 
     /**
-     * Abstract method to return what type of item this is.
-     * Must be implemented by subclasses (e.g., Product).
+     * Abstract method to get item type.
+     * Implemented by subclasses.
+     * @return The type of item.
      */
     public abstract String getItemType();
 
     /**
-     * Returns item data in CSV format for file saving.
-     * Example: Apple,20,2025-05-01,Vegetables & Fruits,true
+     * Returns a CSV representation of the item.
+     * @return CSV string of product data.
      */
     public String toCSV() {
         String expDate = perishable ? expirationDate.toString() : "N/A";
@@ -84,16 +75,12 @@ public abstract class AbstractItem {
     }
 
     /**
-     * Basic string representation of the item.
-     * Shows important details in human-readable format.
+     * Returns a formatted string to display item info.
+     * @return Product details.
      */
     @Override
     public String toString() {
         String expDate = perishable ? expirationDate.toString() : "N/A";
-        return "Name: " + name +
-                ", Quantity: " + quantity +
-                ", Expires: " + expDate +
-                ", Section: " + section +
-                ", Type: " + getItemType();
+        return "Name: " + name + ", Quantity: " + quantity + ", Expires: " + expDate + ", Section: " + section + ", Type: " + getItemType();
     }
 }
