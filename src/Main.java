@@ -1,88 +1,43 @@
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
-/**
- * Main class for Team4$ SuperMinimarket Inventory Management System.
- * Displays today's date, alerts the manager to perishable items expiring within 7 days,
- * allows a manager to log in by selecting their name, and provides a menu to manage inventory.
- * Additionally, it provides private GM-only information accessible only to Andrea.
- */
 public class Main {
-    /**
-     * Prints an ASCII art banner with the store name and today's date.
-     */
     public static void printBanner() {
         System.out.println("========================================");
-        System.out.println("   Welcome to Team4$ SuperMinimarket  ");
+        System.out.println("  Welcome to Team4$ SuperMinimarket  ");
+      //  System.out.println("       Management Extravaganza        ");
         System.out.println("========================================");
         System.out.println("Today's Date: " + LocalDate.now());
     }
 
-    /**
-     * Allows the user to choose a manager from a predefined list.
-     * @param scanner Scanner object for user input.
-     * @return The name of the chosen manager.
-     */
     public static String managerLogin(Scanner scanner) {
         List<String> managers = Arrays.asList("Andrea", "Mohamed", "Dylan", "Ryan");
         System.out.println("\nManager Login");
         System.out.println("Available managers: " + managers);
-        while(true) {
+        while (true) {
             System.out.print("Please enter your name to log in: ");
             String input = scanner.nextLine().trim();
-            for(String manager : managers) {
-                if(manager.equalsIgnoreCase(input)) {
+            for (String manager : managers) {
+                if (manager.equalsIgnoreCase(input)) {
                     System.out.println("Welcome, " + manager + "!");
                     return manager;
                 }
             }
-            System.out.println("❗ Invalid manager name. Try again.");
+            System.out.println("Invalid manager name. Try again.");
         }
     }
 
-    /**
-     * Generates allowed expiration dates.
-     * For example, starting at 3 weeks (21 days) from today and spanning 7 days.
-     * @return A list of allowed LocalDate objects.
-     */
     public static List<LocalDate> generateAllowedDates() {
         List<LocalDate> allowedDates = new ArrayList<>();
         LocalDate startDate = LocalDate.now().plusDays(21);
-        // Generate 7 consecutive dates starting at startDate.
         for (int i = 0; i < 7; i++) {
             allowedDates.add(startDate.plusDays(i));
         }
         return allowedDates;
     }
 
-    /**
-     * Prepopulates the inventory with sample products.
-     * Some items are perishable (Vegetables & Fruits, Cereals & Snacks, Dairy) and others are non-perishable (Electronics, Clothing, Toys).
-     */
-    public static void initializeInventory(Inventory inventory) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        // For prepopulated products, we assume dates are valid.
-        inventory.addItem(new Product("Apple", 50, LocalDate.parse("2025-05-10", formatter), "Vegetables & Fruits", true));
-        inventory.addItem(new Product("Banana", 40, LocalDate.parse("2025-05-08", formatter), "Vegetables & Fruits", true));
-        inventory.addItem(new Product("Corn Flakes", 30, LocalDate.parse("2025-05-20", formatter), "Cereals & Snacks", true));
-        inventory.addItem(new Product("Potato Chips", 60, LocalDate.parse("2025-05-18", formatter), "Cereals & Snacks", true));
-        inventory.addItem(new Product("Milk", 20, LocalDate.parse("2025-05-15", formatter), "Dairy", true));
-        inventory.addItem(new Product("Yogurt", 25, LocalDate.parse("2025-05-16", formatter), "Dairy", true));
-        inventory.addItem(new Product("LED TV", 10, null, "Electronics", false));
-        inventory.addItem(new Product("T-Shirt", 35, null, "Clothing", false));
-        inventory.addItem(new Product("Action Figure", 15, null, "Toys", false));
-    }
-
-    /**
-     * Displays additional private information for the GM (Andrea).
-     * This report shows total product count and low stock items.
-     */
     public static void displayPrivateGMInfo(Inventory inventory) {
         System.out.println("========== GM Private Report ==========");
         System.out.println("Total number of products: " + inventory.getTotalItemCount());
@@ -97,17 +52,18 @@ public class Main {
         Warehouse<AbstractItem> warehouse = new Warehouse<>();
 
         printBanner();
-
-        // Manager login process.
         String manager = managerLogin(scanner);
-
-        // Prepopulate inventory.
-        initializeInventory(inventory);
-
-        // Alert for perishable items expiring within 7 days.
         inventory.checkExpiringItems();
 
-        // Main menu loop.
+        // Categorize products by section
+        Map<String, List<String>> sectionProducts = new LinkedHashMap<>();
+        sectionProducts.put("Vegetables & Fruits", Arrays.asList("Apple", "Banana"));
+        sectionProducts.put("Cereals & Snacks", Arrays.asList("Corn Flakes", "Potato Chips"));
+        sectionProducts.put("Dairy", Arrays.asList("Milk", "Yogurt"));
+        sectionProducts.put("Electronics", Arrays.asList("LED TV"));
+        sectionProducts.put("Clothing", Arrays.asList("T-Shirt"));
+        sectionProducts.put("Toys", Arrays.asList("Action Figure"));
+
         while (true) {
             System.out.println("\n--- Main Menu ---");
             System.out.println("1. Add a New Product");
@@ -115,8 +71,7 @@ public class Main {
             System.out.println("3. Display Items by Section");
             System.out.println("4. Process Orders");
             System.out.println("5. Undo Last Update");
-            // GM-only option visible only if manager is Andrea.
-            if(manager.equalsIgnoreCase("Andrea")) {
+            if (manager.equalsIgnoreCase("Andrea")) {
                 System.out.println("7. View GM Private Report");
             }
             System.out.println("6. Save & Exit");
@@ -125,38 +80,72 @@ public class Main {
             int choice;
             try {
                 choice = Integer.parseInt(scanner.nextLine());
-            } catch(NumberFormatException e) {
-                System.out.println("❗ Please enter a valid number.");
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid number.");
                 continue;
             }
 
-            // GM-specific option.
-            if(manager.equalsIgnoreCase("Andrea") && choice == 7) {
+            if (manager.equalsIgnoreCase("Andrea") && choice == 7) {
                 displayPrivateGMInfo(inventory);
                 continue;
             }
 
-            if(choice == 6) {
+            if (choice == 6) {
                 try {
                     inventory.saveInventory("inventory.txt");
-                    System.out.println(" Inventory saved. Exiting system... Goodbye, " + manager + "!");
-                } catch(IOException e) {
-                    System.out.println("❗ Error saving inventory: " + e.getMessage());
+                    System.out.println("Inventory saved. Exiting system... Goodbye, " + manager + "!");
+                } catch (IOException e) {
+                    System.out.println("Error saving inventory: " + e.getMessage());
                 }
                 return;
             }
 
             switch (choice) {
                 case 1:
-                    System.out.print("Enter product name: ");
-                    String name = scanner.nextLine();
+                    List<String> allSections = new ArrayList<>(sectionProducts.keySet());
+                    System.out.println("Select a section:");
+                    for (int i = 0; i < allSections.size(); i++) {
+                        System.out.println((i + 1) + ". " + allSections.get(i));
+                    }
+                    System.out.print("Enter section number: ");
+                    int sectionChoice;
+                    try {
+                        sectionChoice = Integer.parseInt(scanner.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid section.");
+                        break;
+                    }
+                    if (sectionChoice < 1 || sectionChoice > allSections.size()) {
+                        System.out.println("Invalid section.");
+                        break;
+                    }
+                    String section = allSections.get(sectionChoice - 1);
+                    List<String> availableProducts = sectionProducts.get(section);
+
+                    System.out.println("Select a product from " + section + ":");
+                    for (int i = 0; i < availableProducts.size(); i++) {
+                        System.out.println((i + 1) + ". " + availableProducts.get(i));
+                    }
+                    System.out.print("Enter product number: ");
+                    int productChoice;
+                    try {
+                        productChoice = Integer.parseInt(scanner.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid selection.");
+                        break;
+                    }
+                    if (productChoice < 1 || productChoice > availableProducts.size()) {
+                        System.out.println("Invalid selection.");
+                        break;
+                    }
+                    String name = availableProducts.get(productChoice - 1);
 
                     System.out.print("Enter quantity: ");
                     int quantity;
                     try {
                         quantity = Integer.parseInt(scanner.nextLine());
-                    } catch(NumberFormatException e) {
-                        System.out.println("❗ Invalid quantity.");
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid quantity.");
                         break;
                     }
 
@@ -166,8 +155,7 @@ public class Main {
                     String perishableInput = scanner.nextLine();
                     perishable = perishableInput.equalsIgnoreCase("yes");
 
-                    if(perishable) {
-                        // Generate allowed expiration dates dynamically.
+                    if (perishable) {
                         List<LocalDate> allowedDates = generateAllowedDates();
                         System.out.println("Select an expiration date from the following options:");
                         for (int i = 0; i < allowedDates.size(); i++) {
@@ -178,61 +166,66 @@ public class Main {
                         try {
                             indexChoice = Integer.parseInt(scanner.nextLine());
                         } catch (NumberFormatException e) {
-                            System.out.println("❗ Invalid selection.");
+                            System.out.println("Invalid selection.");
                             break;
                         }
-                        if(indexChoice < 1 || indexChoice > allowedDates.size()) {
-                            System.out.println("❗ Invalid selection.");
+                        if (indexChoice < 1 || indexChoice > allowedDates.size()) {
+                            System.out.println("Invalid selection.");
                             break;
                         }
                         expirationDate = allowedDates.get(indexChoice - 1);
-                        // The generated allowed dates are by design at least 3 weeks from today.
                     }
-
-                    System.out.print("Enter store section (e.g., Vegetables & Fruits, Cereals & Snacks, Dairy, Electronics, Clothing, Toys): ");
-                    String section = scanner.nextLine();
 
                     Product newProduct = new Product(name, quantity, expirationDate, section, perishable);
                     inventory.addItem(newProduct);
                     warehouse.addItem(newProduct);
-                    System.out.println(" Product added!");
+                    System.out.println("Product added.");
 
-                    // If perishable and expiring soon (within 7 days), show an alert.
-                    if(perishable && newProduct.getExpirationDate().isBefore(LocalDate.now().plusDays(8))) {
-                        System.out.println(" Alert: " + newProduct.getName() + " will expire on " + newProduct.getExpirationDate());
-                    }
                     break;
 
                 case 2:
-                    System.out.print("Enter product name to update: ");
-                    String updateName = scanner.nextLine();
-
-                    // Display product details before update.
-                    AbstractItem product = inventory.getItemByName(updateName);
-                    if(product == null) {
-                        System.out.println("❗ Product not found.");
+                    List<AbstractItem> productList = inventory.getAllItems();
+                    if (productList.isEmpty()) {
+                        System.out.println("No products available to update.");
                         break;
                     }
+                    System.out.println("Select a product to update:");
+                    for (int i = 0; i < productList.size(); i++) {
+                        AbstractItem item = productList.get(i);
+                        System.out.println((i + 1) + ". " + item.getName() + " (Qty: " + item.getQuantity() + ")");
+                    }
+                    System.out.print("Enter the product number: ");
+                    int prodChoice;
+                    try {
+                        prodChoice = Integer.parseInt(scanner.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid selection.");
+                        break;
+                    }
+                    if (prodChoice < 1 || prodChoice > productList.size()) {
+                        System.out.println("Invalid selection.");
+                        break;
+                    }
+                    AbstractItem product = productList.get(prodChoice - 1);
                     System.out.println("Before update: " + product.toString());
 
                     System.out.print("Enter new quantity: ");
                     int newQuantity;
                     try {
                         newQuantity = Integer.parseInt(scanner.nextLine());
-                    } catch(NumberFormatException e) {
-                        System.out.println("❗ Invalid quantity.");
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid quantity.");
                         break;
                     }
                     try {
-                        inventory.updateStock(updateName, newQuantity);
-                        System.out.println(" Quantity updated!");
+                        inventory.updateStock(product.getName(), newQuantity);
+                        System.out.println("Quantity updated.");
                     } catch (ProductNotFound e) {
-                        System.out.println("❗ " + e.getMessage());
+                        System.out.println(e.getMessage());
                         break;
                     }
 
-                    // Display product details after update.
-                    AbstractItem updated = inventory.getItemByName(updateName);
+                    AbstractItem updated = inventory.getItemByName(product.getName());
                     System.out.println("After update: " + updated.toString());
                     break;
 
@@ -252,7 +245,7 @@ public class Main {
                     break;
 
                 default:
-                    System.out.println("❗ Invalid option. Please try again.");
+                    System.out.println("Invalid option. Please try again.");
             }
         }
     }
