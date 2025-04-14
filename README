@@ -1,13 +1,7 @@
-Remove duplicate manually:
 
-It involved
-Creating a new list called uniqueList.
-Iterated through the original list.
-Before adding each item to uniqueList, checked if it was already present.
-
-Then we Used a Stack and pushed each element from uniqueList onto the stack.
-Since stacks follow a Last-In, First-Out (LIFO) order, popping elements from the stack retrieves them in reverse order. 
-Use a stack to reverse the list: 
-
-Display the final reverse list
-We the original list, the list after removing duplicates, and the final reversed list to clearly show the transformations.
+Why do we use JavaDocs
+JavaDocs are used to create professional documentation for a Java project. 
+They help users and developers understand the purpose, functionality, and usage of the code without having to read every line. 
+In a project, we generate JavaDocs using special comments (/** ... */) placed above classes, methods, and variables to explain what they do.
+Once generated, the JavaDocs create an HTML website that provides a clear and organized view of the code structure. 
+This documentation can then be shared with others by hosting it on a website like GitHub Pages or saving it locally, so anyone using the project can easily navigate and understand how to use the different parts of the code.
