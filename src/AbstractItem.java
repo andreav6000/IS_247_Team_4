@@ -1,86 +1,60 @@
 import java.time.LocalDate;
 
-/**
- * Abstract class representing an item in inventory.
- * Used as a base class for different product types.
- * Demonstrates abstraction and method overriding.
- */
 public abstract class AbstractItem {
-
     protected String name;
     protected int quantity;
-    protected LocalDate expirationDate; // Only for perishable items
+    protected LocalDate expirationDate;
     protected String section;
     protected boolean perishable;
-
     /**
-     * Constructor for AbstractItem.
-     * @param name The product name.
-     * @param quantity Product quantity.
-     * @param expirationDate Expiration date if perishable.
-     * @param section Store section where product belongs.
-     * @param perishable True if the product is perishable.
+     * Constructs an item.
+     * @param name Name of the item
+     * @param quantity Initial quantity
+     * @param expirationDate Expiration date (if perishable)
+     * @param section Store section
+     * @param perishable true if item is perishable
      */
+
     public AbstractItem(String name, int quantity, LocalDate expirationDate, String section, boolean perishable) {
         this.name = name;
         this.quantity = quantity;
+        this.expirationDate = expirationDate;
         this.section = section;
         this.perishable = perishable;
-        if (perishable) {
-            this.expirationDate = expirationDate;
-        } else {
-            this.expirationDate = null;
-        }
     }
 
-    // Getter methods
     public String getName() { return name; }
     public int getQuantity() { return quantity; }
-    public LocalDate getExpirationDate() { return expirationDate; }
     public String getSection() { return section; }
     public boolean isPerishable() { return perishable; }
+    public LocalDate getExpirationDate() { return expirationDate; }
 
+    public void setQuantity(int quantity) { this.quantity = quantity; }
     /**
-     * Sets a new quantity for a non-perishable item.
-     * @param quantity New quantity value.
-     */
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    /**
-     * Checks if item is expired.
-     * Only works for perishable items.
-     * @return True if expired, false otherwise.
+     * Checks if the item is expired.
+     * @return true if expired
      */
     public boolean isExpired() {
         if (!perishable) return false;
         return LocalDate.now().isAfter(expirationDate);
     }
-
     /**
-     * Abstract method to get item type.
-     * Implemented by subclasses.
-     * @return The type of item.
+     * Returns the type of item (defined in subclass).
+     * @return item type string
      */
     public abstract String getItemType();
-
     /**
-     * Returns a CSV representation of the item.
-     * @return CSV string of product data.
+     * Converts item data into CSV format.
+     * @return CSV string
      */
     public String toCSV() {
-        String expDate = perishable ? expirationDate.toString() : "N/A";
-        return name + "," + quantity + "," + expDate + "," + section + "," + perishable;
+        String exp = perishable ? expirationDate.toString() : "N/A";
+        return name + "," + quantity + "," + exp + "," + section + "," + perishable;
     }
 
-    /**
-     * Returns a formatted string to display item info.
-     * @return Product details.
-     */
     @Override
     public String toString() {
-        String expDate = perishable ? expirationDate.toString() : "N/A";
-        return "Name: " + name + ", Quantity: " + quantity + ", Expires: " + expDate + ", Section: " + section + ", Type: " + getItemType();
+        String exp = perishable ? expirationDate.toString() : "N/A";
+        return "Name: " + name + ", Qty: " + quantity + ", Expires: " + exp + ", Section: " + section;
     }
 }
