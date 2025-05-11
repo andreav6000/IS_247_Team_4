@@ -1,0 +1,68 @@
+@startuml
+' Abstract class
+abstract class AbstractItem {
+    - name: String
+    - quantity: int
+    - expirationDate: LocalDate
+    - section: String
+    - perishable: boolean
+    + getName(): String
+    + getQuantity(): int
+    + getSection(): String
+    + isPerishable(): boolean
+}
+
+class Product extends AbstractItem {
+    - category: String
+    - batches: List<ProductBatch>
+    + addOrUpdateBatch(int, LocalDate): void
+    + getBatches(): List<ProductBatch>
+    + updateStock(String, int): void
+    + removeStock(int): void
+}
+
+class ProductBatch {
+    - quantity: int
+    - expirationDate: LocalDate
+}
+
+class Inventory {
+    - items: List<AbstractItem>
+    - itemMap: Map<String, AbstractItem>
+    - orderQueue: Queue<String>
+    - managerContributions: Map<String, Integer>
+    + addItem(AbstractItem): void
+    + updateStock(String, int): void
+    + processOrders(): void
+    + displayItems(): void
+}
+
+class Warehouse<T extends AbstractItem> {
+    - items: List<T>
+    + addItem(T): void
+    + getItem(int): T
+    + getAllItems(): List<T>
+}
+
+class DisplayUI {
+    + displayCategorySummary(Map<String, List<Product>>): void
+}
+
+interface StockAdjustable {
+    + addStock(int): void
+    + removeStock(int): void
+}
+
+class Main {
+    + main(String[]): void
+}
+
+class ProductNotFound extends Exception
+
+' Relationships
+AbstractItem <|-- Product
+Product --> ProductBatch
+Inventory --> AbstractItem
+Warehouse --> AbstractItem
+Product ..|> StockAdjustable
+@enduml

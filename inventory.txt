@@ -1,1 +1,9 @@
-Apple,10,2025-05-05,Vegetables & Fruits,true
+Milk,7,2025-05-20,Dairy,true
+Yogurt,10,2025-05-18,Dairy,true
+Corn Flakes,13,N/A,Cereals & Snacks,false
+Potato Chips,12,N/A,Cereals & Snacks,false
+Apple,9,2025-05-17,Vegetables & Fruits,true
+Banana,11,2025-05-22,Vegetables & Fruits,true
+LED TV,13,N/A,Electronics,false
+T-Shirt,7,N/A,Clothing,false
+Action Figure,8,N/A,Toys,false
