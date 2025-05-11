@@ -2,48 +2,49 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Warehouse class that stores a collection of items (products).
- * This is a generic class that can store any type of item that
- * extends AbstractItem.
+ * A generic warehouse for storing items of a specific type.
  *
- * Example usage:
- * Warehouse<Product> warehouse = new Warehouse<>();
+ * @param <T> the type of item this warehouse holds; must extend AbstractItem
+ *
+ * Example:
+ * <pre>
+ *     Warehouse&lt;Product&gt; warehouse = new Warehouse&lt;&gt;();
+ * </pre>
  */
 public class Warehouse<T extends AbstractItem> {
 
-    // List to store all items in the warehouse
     private List<T> items;
 
     /**
-     * Constructor to create an empty warehouse.
+     * Constructs a new Warehouse.
      */
     public Warehouse() {
         items = new ArrayList<>();
     }
 
     /**
-     * Adds an item to the warehouse storage.
+     * Adds an item to the warehouse.
      *
-     * @param item The item we want to store.
+     * @param item the item to add
      */
     public void addItem(T item) {
         items.add(item);
     }
 
     /**
-     * Retrieves an item from the warehouse based on its position.
+     * Gets an item by index.
      *
-     * @param index The position in the list.
-     * @return The item found at that position.
+     * @param index the index of the item
+     * @return the item at the given index
      */
     public T getItem(int index) {
         return items.get(index);
     }
 
     /**
-     * Returns a list of all items stored in the warehouse.
+     * Gets all items in the warehouse.
      *
-     * @return List of items.
+     * @return list of all items
      */
     public List<T> getAllItems() {
         return items;
