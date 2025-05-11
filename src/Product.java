@@ -7,42 +7,34 @@ import java.util.List;
  * This class extends AbstractItem and implements StockAdjustable.
  *
  * Main Features:
- * - Can handle both perishable and non-perishable products.
- * - Perishable products can have multiple batches with different expiration dates.
+ * - Works for both perishable and non-perishable items
+ * - Perishables are tracked in batches with their own expiration dates
  */
 public class Product extends AbstractItem implements StockAdjustable {
 
-    // List of batches (used only if the product is perishable)
-    private List<ProductBatch> batches;
+    private String category; // What kind of product it is (e.g., Snacks, Dairy)
+    private List<ProductBatch> batches; // Only used if the product is perishable
 
     /**
-     * Constructor for Product.
-     * For perishable products, quantity is managed through batches.
-     * For non-perishable products, quantity is stored directly.
-     *
-     * @param name Product name.
-     * @param quantity Initial quantity.
-     * @param expirationDate Expiration date (only if perishable).
-     * @param section Store section.
-     * @param perishable true if the product is perishable.
+     * Constructor for Product
+     * If it's perishable, we track quantity using batches with expiration dates.
+     * If it's not perishable, we just store the quantity normally.
      */
-    public Product(String name, int quantity, LocalDate expirationDate, String section, boolean perishable) {
-        super(name, 0, null, section, perishable); // Quantity is set based on perishable status
+    public Product(String name, String category, int quantity, LocalDate expirationDate, String section, boolean perishable) {
+        super(name, 0, null, section, perishable); // Start with quantity 0 and set it based on perishable status
+        this.category = category;
         this.batches = new ArrayList<>();
 
-        // If perishable, create a batch
         if (perishable) {
+            // Add the first batch of this perishable product
             addOrUpdateBatch(quantity, expirationDate);
         } else {
-            this.quantity = quantity; // For non-perishable items
+            this.quantity = quantity;
         }
     }
 
     /**
-     * Adds a new batch OR updates an existing batch (if expiration date matches).
-     *
-     * @param qty Quantity to add.
-     * @param expirationDate Expiration date of the batch.
+     * This method adds a new batch or updates an existing one (if the expiration date already exists)
      */
     public void addOrUpdateBatch(int qty, LocalDate expirationDate) {
         for (ProductBatch batch : batches) {
@@ -51,13 +43,13 @@ public class Product extends AbstractItem implements StockAdjustable {
                 return;
             }
         }
+        // If no batch matched the expiration date, we add a new one
         batches.add(new ProductBatch(qty, expirationDate));
     }
 
     /**
-     * Calculates total quantity of product.
-     * For perishable: sum of all batches.
-     * For non-perishable: stored quantity.
+     * Gets the total quantity of this product
+     * If it's perishable, it adds up all batch quantities
      */
     @Override
     public int getQuantity() {
@@ -66,7 +58,7 @@ public class Product extends AbstractItem implements StockAdjustable {
     }
 
     /**
-     * Returns the earliest expiration date (for perishable products).
+     * For perishable items, this gets the closest expiration date
      */
     @Override
     public LocalDate getExpirationDate() {
@@ -74,16 +66,18 @@ public class Product extends AbstractItem implements StockAdjustable {
         return batches.stream()
                 .map(ProductBatch::getExpirationDate)
                 .min(LocalDate::compareTo)
-                .orElse(null);
-    }
-
-    // Getter for all batches
-    public List<ProductBatch> getBatches() {
-        return batches;
+                .orElse(null); // If no batches, return null
     }
 
     /**
-     * Tells us this is a Product type item.
+     * Returns the product's category (like "Dairy" or "Clothing")
+     */
+    public String getCategory() {
+        return category;
+    }
+
+    /**
+     * Just tells the system this item is a "Product"
      */
     @Override
     public String getItemType() {
@@ -91,7 +85,14 @@ public class Product extends AbstractItem implements StockAdjustable {
     }
 
     /**
-     * Adds stock (only for non-perishable).
+     * Returns all the batches for this perishable item
+     */
+    public List<ProductBatch> getBatches() {
+        return batches;
+    }
+
+    /**
+     * Adds stock to non-perishable products
      */
     @Override
     public void addStock(int amount) {
@@ -101,8 +102,8 @@ public class Product extends AbstractItem implements StockAdjustable {
     }
 
     /**
-     * Removes stock (only for non-perishable).
-     * Throws error if trying to remove more than available.
+     * Removes stock from non-perishable products
+     * Throws an error if someone tries to remove more than we have
      */
     @Override
     public void removeStock(int amount) throws IllegalArgumentException {
@@ -113,7 +114,7 @@ public class Product extends AbstractItem implements StockAdjustable {
     }
 
     /**
-     * Update stock with a new quantity (for non-perishable).
+     * Directly sets a new quantity (non-perishable only)
      */
     public void updateStock(int newQuantity) {
         if (!perishable) {
@@ -122,7 +123,7 @@ public class Product extends AbstractItem implements StockAdjustable {
     }
 
     /**
-     * Update stock using an operator (+ or -) and a value.
+     * Adds or subtracts quantity using operators like "+" or "-" (non-perishable)
      */
     public void updateStock(String operator, int value) {
         if (!perishable) {
@@ -132,7 +133,7 @@ public class Product extends AbstractItem implements StockAdjustable {
     }
 
     /**
-     * Checks if all batches are expired (for perishable).
+     * Checks if all batches of this product are expired (for perishables only)
      */
     @Override
     public boolean isExpired() {
@@ -142,9 +143,8 @@ public class Product extends AbstractItem implements StockAdjustable {
     }
 
     /**
-     * String version of Product.
-     * For perishable: shows all batches.
-     * For non-perishable: shows quantity.
+     * Converts this product into a readable string
+     * Shows batches if it's perishable
      */
     @Override
     public String toString() {
@@ -163,8 +163,7 @@ public class Product extends AbstractItem implements StockAdjustable {
     }
 
     /**
-     * Converts product data to CSV format for file saving.
-     * For perishable: uses first batch details.
+     * Converts this product into CSV format (used for saving to file)
      */
     @Override
     public String toCSV() {

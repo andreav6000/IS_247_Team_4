@@ -4,22 +4,24 @@ import java.util.*;
 
 /**
  * Inventory class manages the store items.
- * Handles all operations like adding, updating, saving, and displaying inventory.
- * Now includes manager contribution tracking!
+ * Handles everything like adding items, updating stock,
+ * saving to file, loading from file, and more.
+ * Also tracks how many items each manager adds!
  */
 public class Inventory {
 
-    private List<AbstractItem> items;
-    private Map<String, AbstractItem> itemMap;
-    private Stack<String> undoStack;
-    private Queue<String> orderQueue;
+    private List<AbstractItem> items; // List of all products in the store
+    private Map<String, AbstractItem> itemMap; // Helps us find products faster
+    private Stack<String> undoStack; // Used for undoing the last stock update
+    private Queue<String> orderQueue; // Stores customer orders
 
-    // NEW: Track how many products each manager added
+    // Keep track of how much each manager has added
     private Map<String, Integer> managerContributions = new HashMap<>();
 
     public static final int LOW_STOCK = 5;
     public static final int OVER_STOCK = 100;
 
+    // Constructor
     public Inventory() {
         items = new ArrayList<>();
         itemMap = new HashMap<>();
@@ -27,12 +29,10 @@ public class Inventory {
         orderQueue = new LinkedList<>();
     }
 
-    // Record product contribution by manager
     public void recordManagerContribution(String manager, int quantity) {
         managerContributions.put(manager, managerContributions.getOrDefault(manager, 0) + quantity);
     }
 
-    // Get total quantity added by all managers
     public Map<String, Integer> getManagerContributions() {
         return managerContributions;
     }
@@ -47,8 +47,22 @@ public class Inventory {
         if (existing != null && existing instanceof Product && existing.isPerishable()) {
             ((Product) existing).addOrUpdateBatch(qty, expiration);
         } else {
-            addItem(new Product(name, qty, expiration, section, true));
+            addItem(new Product(name, "General", qty, expiration, section, true));
         }
+    }
+
+    public void printMostStockedProduct() {
+        int maxQty = 0;
+        String productName = "";
+
+        for (AbstractItem item : items) {
+            if (item.getQuantity() > maxQty) {
+                maxQty = item.getQuantity();
+                productName = item.getName();
+            }
+        }
+
+        System.out.println("Most Stocked: " + productName + " with " + Math.max(maxQty, 0) + " units");
     }
 
     public void updateStock(String name, int newQuantity) throws ProductNotFound {
@@ -97,9 +111,17 @@ public class Inventory {
         return recursiveSearch(name, index + 1);
     }
 
-    /**
-     * Display items by section + show manager contribution summary
-     */
+    public Map<String, List<Product>> getProductsGroupedByCategory() {
+        Map<String, List<Product>> grouped = new HashMap<>();
+        for (AbstractItem item : items) {
+            if (item instanceof Product) {
+                Product p = (Product) item;
+                grouped.computeIfAbsent(p.getCategory(), k -> new ArrayList<>()).add(p);
+            }
+        }
+        return grouped;
+    }
+
     public void displayItems() {
         System.out.println("Full Store Inventory:");
         Map<String, List<AbstractItem>> sectionMap = new HashMap<>();
@@ -120,7 +142,6 @@ public class Inventory {
             System.out.println("Total quantity of products in " + section + ": " + totalQty);
         }
 
-        // NEW: Manager Summary
         System.out.println("\n--- Manager Product Contributions ---");
         for (String manager : managerContributions.keySet()) {
             System.out.println(manager + " added a total of " + managerContributions.get(manager) + " products.");
@@ -150,7 +171,9 @@ public class Inventory {
                     String section = parts[3];
                     boolean perishable = Boolean.parseBoolean(parts[4]);
                     LocalDate expirationDate = perishable ? LocalDate.parse(expStr) : null;
-                    AbstractItem item = new Product(name, quantity, expirationDate, section, perishable);
+
+                    // FIX: using "General" as the default category
+                    AbstractItem item = new Product(name, "General", quantity, expirationDate, section, perishable);
                     addItem(item);
                 }
             }
@@ -160,14 +183,65 @@ public class Inventory {
     public void addOrder(String order) {
         orderQueue.offer(order);
     }
-
     public void processOrders() {
         System.out.println("Processing orders:");
         while (!orderQueue.isEmpty()) {
             String order = orderQueue.poll();
-            System.out.println("Processing order: " + order);
+            String[] parts = order.trim().split(" ");
+
+            if (parts.length < 2) {
+                System.out.println("❌ Invalid order format. Use format like '3 apples'");
+                continue;
+            }
+
+            int quantity;
+            try {
+                quantity = Integer.parseInt(parts[0]);
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Invalid quantity in order: " + order);
+                continue;
+            }
+
+            // Reconstruct product name (handles multi-word names like "apple juice")
+            StringBuilder nameBuilder = new StringBuilder();
+            for (int i = 1; i < parts.length; i++) {
+                nameBuilder.append(parts[i]).append(" ");
+            }
+            String rawName = nameBuilder.toString().trim();
+
+            // Try both singular and plural matches
+            AbstractItem item = getItemByName(rawName);
+            if (item == null && rawName.endsWith("s")) {
+                item = getItemByName(rawName.substring(0, rawName.length() - 1));
+            }
+
+            if (item == null) {
+                System.out.println(" Product not found: " + rawName);
+                continue;
+            }
+
+            if (item.getQuantity() < quantity) {
+                System.out.println(" Not enough stock to fulfill order for: " + rawName + " (Requested: " + quantity + ", Available: " + item.getQuantity() + ")");
+                continue;
+            }
+
+            if (item instanceof Product) {
+                Product product = (Product) item;
+                try {
+                    for (int i = 0; i < quantity; i++) {
+                        product.removeStock(1);
+                    }
+                    System.out.println(" Sold " + quantity + " unit(s) of " + product.getName() + " (Remaining: " + product.getQuantity() + ")");
+                } catch (IllegalArgumentException e) {
+                    System.out.println(" Error processing order for: " + rawName);
+                }
+            } else {
+                System.out.println(" Cannot process non-product item.");
+            }
         }
     }
+
+
 
     public void undoLastUpdate() {
         if (!undoStack.isEmpty()) {
