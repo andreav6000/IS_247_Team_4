@@ -14,7 +14,7 @@
 ## **Problem Statement: Store Inventory System Management**
 
 Many small grocery stores still rely on manual inventory tracking, which makes it difficult for owners to keep up with their stock. Without a digital system, they have to physically check shelves in order to figure out what is running low or overstocked. This process is not only time consuming but can also lead to wasted products, financial losses, and missed sales opportunities.
-To solve this issue, our group has decided to develop a ***digital inventory management system.*** 
+To solve this issue, our group has decided to develop a ***digital superminimart inventory management system.*** 
 This inventory management system will:
 - Track stocks levels in real time, so the managers always know what is available.
 - Make lookup products easier so that employees can quickly find where specific products are located.
